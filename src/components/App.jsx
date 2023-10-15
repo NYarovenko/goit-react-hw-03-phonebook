@@ -5,6 +5,8 @@ import { Component } from 'react';
 import { ContactList } from './contactList/ContactList';
 import { Filter } from './filter/Filter';
 
+const localStorageKey = 'users_contacts';
+
 export class App extends Component {
   state = {
     contacts: [
@@ -15,6 +17,24 @@ export class App extends Component {
     ],
     filter: '',
   };
+
+  componentDidMount() {
+    const savedContacts = localStorage.getItem(localStorageKey);
+    if (savedContacts !== null) {
+      this.setState({
+        contacts: JSON.parse(savedContacts),
+      });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.contacts !== this.state.contacts) {
+      localStorage.setItem(
+        localStorageKey,
+        JSON.stringify(this.state.contacts)
+      );
+    }
+  }
 
   ofContact = name => {
     const { contacts } = this.state;
